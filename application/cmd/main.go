@@ -82,19 +82,17 @@ func bootstrap() *gin.Engine {
 
 	// init server
 	server := gin.New()
-
-	swagger(server)
-
-	// cors
-	server.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
-		AllowOriginFunc:  func(origin string) bool { return true },
-		AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "content-type"},
-		AllowMethods:     []string{"GET", "PUT", "PATCH", "POST", "DELETE"},
+	localCors := cors.New(cors.Config{
+		AllowMethods:     []string{"PUT", "POST", "GET", "OPTIONS", "DELETE"},
+		AllowHeaders:     []string{"Origin"},
+		AllowAllOrigins:  true,
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
-	}))
+	})
+	server.Use(localCors)
+	swagger(server)
+
 	// zap middlewares
 	server.Use(ginzap.Ginzap(logger.Log, time.RFC3339, true))
 
