@@ -93,10 +93,12 @@ func bootstrap() *gin.Engine {
 	route.RoomRoutes(v1, roomController)
 	route.TaskRoutes(v1, taskController)
 	cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
-		AllowMethods:     []string{"GET", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
-		ExposeHeaders:    []string{"Content-Length"},
+		AllowOrigins:    []string{"http://localhost:3000", "http://localhost", "localhost", "127.0.0.1", "*"},
+		AllowOriginFunc: func(origin string) bool { return true },
+		AllowHeaders:    []string{"Origin", "Content-Length", "Content-Type", "content-type"},
+		AllowMethods:    []string{"GET", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"},
+		ExposeHeaders:   []string{"X-Total-Count"},
+		// ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	})
