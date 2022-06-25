@@ -1,6 +1,7 @@
 # pitch backend
 > GDG summer hackerton 2022
 
+https://pitch-backend-qytbbgth3q-du.a.run.app/swagger/index.html
 
 ## local
 ```

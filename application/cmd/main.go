@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
@@ -59,13 +60,15 @@ func main() {
 	if err != nil {
 		panic("Failed to load config file: " + err.Error())
 	}
-
+	fmt.Println("HHHHHHH")
 	server := bootstrap()
+	fmt.Println("HHHHHHH")
 	server.Run(":8080")
 	shutdown()
 }
 
 func bootstrap() *gin.Engine {
+	// gin.SetMode(gin.ReleaseMode)
 	// init db
 	db := infrastructure.ConnectDatabase(phase)
 	infrastructure.Migrate(db)
@@ -81,16 +84,18 @@ func bootstrap() *gin.Engine {
 	roomController := controller.NewRoomController(roomService, taskService)
 
 	// init server
-	server := gin.New()
-	localCors := cors.New(cors.Config{
-		AllowMethods:     []string{"PUT", "POST", "GET", "OPTIONS", "DELETE"},
-		AllowHeaders:     []string{"Origin"},
-		AllowAllOrigins:  true,
-		ExposeHeaders:    []string{"Content-Length"},
-		AllowCredentials: true,
-		MaxAge:           12 * time.Hour,
-	})
-	server.Use(localCors)
+	server := gin.Default()
+
+	server.RedirectTrailingSlash = true
+	server.Use(cors.New(
+		cors.Config{
+			AllowOrigins:     []string{"*"},
+			AllowMethods:     []string{"PUT", "POST", "GET", "OPTIONS", "DELETE"},
+			AllowHeaders:     []string{"Origin, Authorization, Content-Type"},
+			AllowCredentials: true,
+			MaxAge:           12 * time.Hour,
+		}))
+
 	swagger(server)
 
 	// zap middlewares
