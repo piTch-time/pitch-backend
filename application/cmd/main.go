@@ -11,12 +11,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/piTch-time/pitch-backend/application/controller"
 	"github.com/piTch-time/pitch-backend/application/route"
+	"github.com/piTch-time/pitch-backend/docs"
 	"github.com/piTch-time/pitch-backend/domain/service"
 	"github.com/piTch-time/pitch-backend/infrastructure"
 	"github.com/piTch-time/pitch-backend/infrastructure/configs"
 	"github.com/piTch-time/pitch-backend/infrastructure/logger"
 	"github.com/piTch-time/pitch-backend/infrastructure/persistence"
 	"github.com/spf13/viper"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
 )
 
@@ -61,8 +64,7 @@ func bootstrap() *gin.Engine {
 	// init server
 	server := gin.New()
 
-	// set swagger
-	// swagger(server)
+	swagger(server)
 
 	// zap middlewares
 	server.Use(ginzap.Ginzap(logger.Log, time.RFC3339, true))
@@ -71,6 +73,11 @@ func bootstrap() *gin.Engine {
 	v1 := server.Group(versionPrefix)
 	route.RoomRoutes(v1, roomController)
 	return server
+}
+
+func swagger(server *gin.Engine) {
+	docs.SwaggerInfo.BasePath = versionPrefix
+	server.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 }
 
 func shutdown() {

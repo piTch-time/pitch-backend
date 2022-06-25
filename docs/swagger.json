@@ -1,0 +1,186 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/rooms": {
+            "get": {
+                "description": "방 리스트",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rooms"
+                ],
+                "summary": "List rooms",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.listResponseRoom"
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "description": "방 생성",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rooms"
+                ],
+                "summary": "create a room",
+                "parameters": [
+                    {
+                        "description": "방 생성요청 body",
+                        "name": "room",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.postRequestRoom"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.postResponseRoom"
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/rooms/{id}": {
+            "get": {
+                "description": "룸 상세",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rooms"
+                ],
+                "summary": "get a room",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "uint",
+                        "description": "방 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.detailResponseRoom"
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "controller.detailResponseRoom": {
+            "type": "object",
+            "properties": {
+                "endAt": {
+                    "type": "string"
+                },
+                "goal": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "musicUrl": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "startAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.listResponseRoom": {
+            "type": "object",
+            "properties": {
+                "rooms": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controller.responseRoom"
+                    }
+                }
+            }
+        },
+        "controller.postRequestRoom": {
+            "type": "object",
+            "properties": {
+                "endAt": {
+                    "type": "string"
+                },
+                "goal": {
+                    "type": "string"
+                },
+                "musicUrl": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "startAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "controller.postResponseRoom": {
+            "type": "object",
+            "properties": {
+                "roomId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "controller.responseRoom": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

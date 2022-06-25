@@ -1,0 +1,120 @@
+definitions:
+  controller.detailResponseRoom:
+    properties:
+      endAt:
+        type: string
+      goal:
+        type: string
+      id:
+        type: integer
+      musicUrl:
+        type: string
+      name:
+        type: string
+      startAt:
+        type: string
+    type: object
+  controller.listResponseRoom:
+    properties:
+      rooms:
+        items:
+          $ref: '#/definitions/controller.responseRoom'
+        type: array
+    type: object
+  controller.postRequestRoom:
+    properties:
+      endAt:
+        type: string
+      goal:
+        type: string
+      musicUrl:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+      startAt:
+        type: string
+    type: object
+  controller.postResponseRoom:
+    properties:
+      roomId:
+        type: integer
+    type: object
+  controller.responseRoom:
+    properties:
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /rooms:
+    get:
+      consumes:
+      - application/json
+      description: 방 리스트
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.listResponseRoom'
+        "400":
+          description: ""
+      summary: List rooms
+      tags:
+      - rooms
+    post:
+      consumes:
+      - application/json
+      description: 방 생성
+      parameters:
+      - description: 방 생성요청 body
+        in: body
+        name: room
+        required: true
+        schema:
+          $ref: '#/definitions/controller.postRequestRoom'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.postResponseRoom'
+        "400":
+          description: ""
+      summary: create a room
+      tags:
+      - rooms
+  /rooms/{id}:
+    get:
+      consumes:
+      - application/json
+      description: 룸 상세
+      parameters:
+      - description: 방 ID
+        format: uint
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.detailResponseRoom'
+        "400":
+          description: ""
+      summary: get a room
+      tags:
+      - rooms
+swagger: "2.0"

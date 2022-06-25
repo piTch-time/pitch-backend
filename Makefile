@@ -1,4 +1,4 @@
-.PHONY: run build docker up down clean
+.PHONY: run swagger build docker up down clean
 
 GO ?= GO111MODULE=on go
 APP_NAME = pitch
@@ -8,7 +8,13 @@ BUILD_FILE = $(addprefix $(BUILD_DIR)/, main.go)
 
 # local run
 run:
+	make swagger
 	$(GO) run $(BUILD_FILE)
+
+# generate swagger
+swagger:
+	echo "Update swagger to /docs"
+	swag init  -g ./application/cmd/main.go
 
 # build binary
 build:

@@ -32,6 +32,8 @@ WORKDIR /home
 COPY --from=build /go/github.com/piTch-time/pitch-backend/pitch pitch
 # Copy config files to runtime
 COPY --from=build /go/github.com/piTch-time/pitch-backend/infrastructure infrastructure
+# Copy swagger files
+COPY --from=build /go/github.com/piTch-time/pitch-backend/docs docs
 # Define timezone
 ENV TZ=Asia/Seoul
 
