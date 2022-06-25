@@ -12,6 +12,7 @@ type TaskService interface {
 	GetAll(roomID uint) (*entity.Tasks, error)
 	Create(roomID uint, createdBy, description string) (uint, error)
 	Update(task *entity.Task) (*entity.Task, error)
+	GetAllByNickName(roomID uint, createdBy string) (*entity.Tasks, error)
 }
 
 type taskService struct {
@@ -33,12 +34,20 @@ func (ts *taskService) Get(id uint) (task *entity.Task, err error) {
 }
 
 func (ts *taskService) GetAll(roomID uint) (*entity.Tasks, error) {
-	return &entity.Tasks{}, nil
+	tasks, err := ts.taskRepository.GetAll(roomID)
+	if err != nil {
+		return nil, err
+	}
+	return tasks, nil
 }
 
-// func (ts *taskService) GetAllByUnq(roomID uint) (*entity.Tasks, error) {
-// 	return &entity.Tasks{}, nil
-// }
+func (ts *taskService) GetAllByNickName(roomID uint, createdBy string) (*entity.Tasks, error) {
+	tasks, err := ts.taskRepository.GetAllByNickName(roomID, createdBy)
+	if err != nil {
+		return nil, err
+	}
+	return tasks, nil
+}
 
 func (ts *taskService) Create(roomID uint, createdBy, description string) (uint, error) {
 	task, err := entity.NewTask(roomID, createdBy, description)

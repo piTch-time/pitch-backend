@@ -1,16 +1,18 @@
 package entity
 
 import (
+	"fmt"
 	"time"
 )
 
 // Room ...
 type Room struct {
-	ID        uint
-	Goal      string
-	Name      string
-	Password  string
-	MusicURL  string
+	ID       uint
+	Goal     string
+	Name     string
+	Password string
+	MusicURL string
+	// Tasks	*Tasks
 	StartAt   *time.Time
 	EndAt     *time.Time
 	CreatedAt *time.Time
@@ -40,4 +42,10 @@ func (r *Room) IsEqual(other *Room) bool {
 // IsWithinPeriod ...
 func (r *Room) IsWithinPeriod(roobID uint) bool {
 	return true // TODO
+}
+
+// GetStartEnd ...
+func (r *Room) GetStartEnd() string {
+	return fmt.Sprintf("%d-%d", r.StartAt.Hour(), r.EndAt.Hour())
+
 }

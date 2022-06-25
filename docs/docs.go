@@ -114,6 +114,49 @@ const docTemplate = `{
             }
         },
         "/rooms/{room_id}/tasks": {
+            "get": {
+                "description": "닉네임을 통한 태스크들 검색",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "Search Tasks",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "who created task",
+                        "name": "created_by",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "room ID",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/controller.ResponseTask"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            },
             "post": {
                 "description": "태스크 생성",
                 "consumes": [
@@ -210,6 +253,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "controller.ResponseTask": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "isDone": {
+                    "type": "boolean"
+                }
+            }
+        },
         "controller.detailResponseRoom": {
             "type": "object",
             "properties": {
@@ -230,6 +284,13 @@ const docTemplate = `{
                 },
                 "startAt": {
                     "type": "string"
+                },
+                "tasks": {
+                    "description": "Tasks    createdByMappedTasks ` + "`" + `json:\"tasks\"` + "`" + `",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Task"
+                    }
                 }
             }
         },
@@ -332,6 +393,39 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "startEnd": {
+                    "type": "string"
+                },
+                "taskProgress": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entity.Task": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "createdBy": {
+                    "description": "user nickname temporary",
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isDone": {
+                    "type": "boolean"
+                },
+                "roomID": {
+                    "type": "integer"
+                },
+                "updatedAt": {
                     "type": "string"
                 }
             }

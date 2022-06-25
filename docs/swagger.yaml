@@ -1,4 +1,11 @@
 definitions:
+  controller.ResponseTask:
+    properties:
+      description:
+        type: string
+      isDone:
+        type: boolean
+    type: object
   controller.detailResponseRoom:
     properties:
       endAt:
@@ -13,6 +20,11 @@ definitions:
         type: string
       startAt:
         type: string
+      tasks:
+        description: Tasks    createdByMappedTasks `json:"tasks"`
+        items:
+          $ref: '#/definitions/entity.Task'
+        type: array
     type: object
   controller.listResponseRoom:
     properties:
@@ -78,6 +90,28 @@ definitions:
       id:
         type: integer
       name:
+        type: string
+      startEnd:
+        type: string
+      taskProgress:
+        type: integer
+    type: object
+  entity.Task:
+    properties:
+      createdAt:
+        type: string
+      createdBy:
+        description: user nickname temporary
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      isDone:
+        type: boolean
+      roomID:
+        type: integer
+      updatedAt:
         type: string
     type: object
 info:
@@ -148,6 +182,35 @@ paths:
       tags:
       - rooms
   /rooms/{room_id}/tasks:
+    get:
+      consumes:
+      - application/json
+      description: 닉네임을 통한 태스크들 검색
+      parameters:
+      - description: who created task
+        in: query
+        name: created_by
+        required: true
+        type: string
+      - description: room ID
+        in: path
+        name: room_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/controller.ResponseTask'
+            type: array
+        "400":
+          description: ""
+      summary: Search Tasks
+      tags:
+      - tasks
     post:
       consumes:
       - application/json

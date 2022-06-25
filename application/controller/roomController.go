@@ -1,11 +1,14 @@
 package controller
 
 import (
+	"fmt"
+	"math"
 	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/piTch-time/pitch-backend/application"
+	"github.com/piTch-time/pitch-backend/domain/entity"
 	"github.com/piTch-time/pitch-backend/domain/service"
 	"github.com/piTch-time/pitch-backend/infrastructure/logger"
 )
@@ -20,23 +23,50 @@ type RoomController interface {
 
 type roomController struct {
 	roomService service.RoomService
+	taskService service.TaskService
 }
 
 // NewRoomController is a roomController's constructor
-func NewRoomController(rs service.RoomService) RoomController {
+func NewRoomController(rs service.RoomService, ts service.TaskService) RoomController {
 	return &roomController{
 		roomService: rs,
+		taskService: ts,
 	}
 }
 
 type responseRoom struct {
-	ID        uint       `json:"id"`
-	Name      string     `json:"name"`
-	CreatedAt *time.Time `json:"createdAt"`
+	ID           uint       `json:"id"`
+	Name         string     `json:"name"`
+	CreatedAt    *time.Time `json:"createdAt"`
+	TaskProgress int        `json:"taskProgress"`
+	StartEnd     string     `json:"startEnd"`
 }
 
 type listResponseRoom struct {
 	Rooms []responseRoom `json:"rooms"`
+}
+
+const (
+	allDone = 100
+)
+
+// TODO: move to domain but fxxking hackaton
+func getTasksProgress(tasks entity.Tasks) int {
+	total := len(tasks)
+	count := 0
+	if total < 1 {
+		return allDone
+	}
+
+	for _, t := range tasks {
+		if !t.IsDone {
+			continue
+		}
+		count++
+	}
+	percentage := float64(count) / float64(total) * 100.0 // percentage
+	fmt.Println(percentage)
+	return int(math.Round(percentage))
 }
 
 // @Summary      List rooms
@@ -57,24 +87,38 @@ func (rc *roomController) GetAll() gin.HandlerFunc {
 		}
 		roomsResponse := []responseRoom{}
 		for _, room := range *rooms {
+			tasks, err := rc.taskService.GetAll(room.ID)
+			if err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+
 			roomsResponse = append(roomsResponse, responseRoom{
-				ID:        room.ID,
-				Name:      room.Name,
-				CreatedAt: room.CreatedAt,
+				ID:           room.ID,
+				Name:         room.Name,
+				CreatedAt:    room.CreatedAt,
+				TaskProgress: getTasksProgress(*tasks),
+				StartEnd:     room.GetStartEnd(),
 			})
 		}
 		c.JSON(http.StatusOK, listResponseRoom{Rooms: roomsResponse})
 	}
 }
 
-// TODO: task add
+// type createdByMappedTasks struct {
+// 	CreatedBy string         `json:"createdBy"`
+// 	Data      []ResponseTask `json:"data"`
+// }
+
 type detailResponseRoom struct {
-	ID       uint       `json:"id"`
-	Name     string     `json:"name"`
-	Goal     string     `json:"goal"`
-	MusicURL string     `json:"musicUrl"`
-	StartAt  *time.Time `json:"startAt"`
-	EndAt    *time.Time `json:"endAt"`
+	ID       uint   `json:"id"`
+	Name     string `json:"name"`
+	Goal     string `json:"goal"`
+	MusicURL string `json:"musicUrl"`
+	// Tasks    createdByMappedTasks `json:"tasks"`
+	Tasks   *entity.Tasks `json:"tasks"`
+	StartAt *time.Time    `json:"startAt"`
+	EndAt   *time.Time    `json:"endAt"`
 }
 
 // @Summary      get a room
@@ -101,10 +145,18 @@ func (rc *roomController) Get() gin.HandlerFunc {
 			return
 		}
 
+		tasks, err := rc.taskService.GetAll(roomID)
+		if err != nil {
+			logger.Error(err.Error())
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+
 		res := detailResponseRoom{
 			ID:       room.ID,
 			Name:     room.Name,
 			Goal:     room.Goal,
+			Tasks:    tasks,
 			MusicURL: room.MusicURL,
 			StartAt:  room.StartAt,
 			EndAt:    room.EndAt,

@@ -90,3 +90,16 @@ func (tr *TaskRepository) GetAll(roomID uint) (*entity.Tasks, error) {
 	}
 	return &tasks, nil
 }
+
+// GetAllByNickName ...
+func (tr *TaskRepository) GetAllByNickName(roomID uint, createdBy string) (*entity.Tasks, error) {
+	dto := TaskGorms{}
+	if err := tr.db.Where("room_id = ?  AND created_by = ?", roomID, createdBy).Order(" created_at ").Find(&dto).Error; err != nil {
+		return nil, err
+	}
+	tasks := entity.Tasks{}
+	for _, t := range dto {
+		tasks = append(tasks, *t.toEntity())
+	}
+	return &tasks, nil
+}

@@ -64,7 +64,7 @@ func bootstrap() *gin.Engine {
 	roomService := service.NewRoomService(roomRepository)
 
 	taskController := controller.NewTaskController(taskService)
-	roomController := controller.NewRoomController(roomService)
+	roomController := controller.NewRoomController(roomService, taskService)
 
 	// init server
 	server := gin.New()

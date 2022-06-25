@@ -47,5 +47,9 @@ func (rs *roomService) Get(id uint) (room *entity.Room, err error) {
 }
 
 func (rs *roomService) GetAll() (*entity.Rooms, error) {
-	return &entity.Rooms{}, nil
+	rooms, err := rs.roomRepository.GetAll()
+	if err != nil {
+		return nil, err
+	}
+	return rooms, nil
 }

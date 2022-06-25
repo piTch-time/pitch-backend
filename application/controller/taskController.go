@@ -13,9 +13,9 @@ import (
 
 // TaskController ...
 type TaskController interface {
+	GetByNickName() gin.HandlerFunc
 	Post() gin.HandlerFunc
 	Patch() gin.HandlerFunc
-	// VerifyPassword() gin.HandlerFunc
 }
 
 type taskController struct {
@@ -26,6 +26,54 @@ type taskController struct {
 func NewTaskController(ts service.TaskService) TaskController {
 	return &taskController{
 		taskService: ts,
+	}
+}
+
+// ResponseTask ...
+type ResponseTask struct {
+	Description string `json:"description"`
+	IsDone      bool   `json:"isDone"`
+}
+
+// @Summary      Search Tasks
+// @Description  닉네임을 통한 태스크들 검색
+// @Tags         tasks
+// @Accept       json
+// @Produce      json
+// @Param        created_by    query     string  true  "who created task"
+// @Param        room_id  path 	int  true "room ID"
+// @Success      200  {object}   []ResponseTask
+// @Failure      400
+// @Router       /rooms/{room_id}/tasks [get]
+func (tc *taskController) GetByNickName() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		createdBy, isExist := c.GetQuery("created_by")
+		if !isExist {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "created_by query must not be nil"})
+			return
+		}
+
+		roomID, err := application.ParseUint(c.Param("room_id"))
+		if err != nil {
+			logger.Error(err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		tasks, err := tc.taskService.GetAllByNickName(roomID, createdBy)
+		if err != nil {
+			logger.Error(err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		tasksResponse := []ResponseTask{}
+		for _, task := range *tasks {
+			tasksResponse = append(tasksResponse, ResponseTask{
+				Description: task.Description,
+				IsDone:      task.IsDone,
+			})
+		}
+		c.JSON(http.StatusOK, tasksResponse)
 	}
 }
 
@@ -52,14 +100,12 @@ func (tc *taskController) Post() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var req postRequestTask
 		if err := c.BindJSON(&req); err != nil {
-			fmt.Println("1")
 			logger.Error(err.Error())
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 		roomID, err := application.ParseUint(c.Param("room_id"))
 		if err != nil {
-			fmt.Println("2")
 			logger.Error(err.Error())
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -67,7 +113,6 @@ func (tc *taskController) Post() gin.HandlerFunc {
 
 		taskID, err := tc.taskService.Create(roomID, req.CreatedBy, req.Description)
 		if err != nil {
-			fmt.Println("3")
 			logger.Error(err.Error())
 			c.JSON(http.StatusBadRequest, err.Error())
 			return
