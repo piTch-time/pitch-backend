@@ -112,6 +112,101 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/rooms/{room_id}/tasks": {
+            "post": {
+                "description": "태스크 생성",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "create a task",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "room ID",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "태스크 생성요청 body",
+                        "name": "room",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.postRequestTask"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.postResponseTask"
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/rooms/{room_id}/tasks/{task_id}": {
+            "patch": {
+                "description": "태스크 업데이트\n1. 목표를 클릭 했을 때 task의 isDone을 변경해달라고 요청 시 사용\n2. 목표의 내용을 수정하고 싶을 때 description 수정",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tasks"
+                ],
+                "summary": "update a task",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "room ID",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "task ID",
+                        "name": "task_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "태스크 수정 요청 body",
+                        "name": "task",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.patchRequestTask"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.patchResponseTask"
+                        }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -149,6 +244,34 @@ const docTemplate = `{
                 }
             }
         },
+        "controller.patchRequestTask": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "isDone": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "controller.patchResponseTask": {
+            "type": "object",
+            "properties": {
+                "createdBy": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "isDone": {
+                    "type": "boolean"
+                },
+                "roomID": {
+                    "type": "integer"
+                }
+            }
+        },
         "controller.postRequestRoom": {
             "type": "object",
             "properties": {
@@ -172,10 +295,29 @@ const docTemplate = `{
                 }
             }
         },
+        "controller.postRequestTask": {
+            "type": "object",
+            "properties": {
+                "createdBy": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
         "controller.postResponseRoom": {
             "type": "object",
             "properties": {
                 "roomId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "controller.postResponseTask": {
+            "type": "object",
+            "properties": {
+                "taskId": {
                     "type": "integer"
                 }
             }

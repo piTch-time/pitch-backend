@@ -21,6 +21,24 @@ definitions:
           $ref: '#/definitions/controller.responseRoom'
         type: array
     type: object
+  controller.patchRequestTask:
+    properties:
+      description:
+        type: string
+      isDone:
+        type: boolean
+    type: object
+  controller.patchResponseTask:
+    properties:
+      createdBy:
+        type: string
+      description:
+        type: string
+      isDone:
+        type: boolean
+      roomID:
+        type: integer
+    type: object
   controller.postRequestRoom:
     properties:
       endAt:
@@ -36,9 +54,21 @@ definitions:
       startAt:
         type: string
     type: object
+  controller.postRequestTask:
+    properties:
+      createdBy:
+        type: string
+      description:
+        type: string
+    type: object
   controller.postResponseRoom:
     properties:
       roomId:
+        type: integer
+    type: object
+  controller.postResponseTask:
+    properties:
+      taskId:
         type: integer
     type: object
   controller.responseRoom:
@@ -117,4 +147,70 @@ paths:
       summary: get a room
       tags:
       - rooms
+  /rooms/{room_id}/tasks:
+    post:
+      consumes:
+      - application/json
+      description: 태스크 생성
+      parameters:
+      - description: room ID
+        in: path
+        name: room_id
+        required: true
+        type: integer
+      - description: 태스크 생성요청 body
+        in: body
+        name: room
+        required: true
+        schema:
+          $ref: '#/definitions/controller.postRequestTask'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.postResponseTask'
+        "400":
+          description: ""
+      summary: create a task
+      tags:
+      - tasks
+  /rooms/{room_id}/tasks/{task_id}:
+    patch:
+      consumes:
+      - application/json
+      description: |-
+        태스크 업데이트
+        1. 목표를 클릭 했을 때 task의 isDone을 변경해달라고 요청 시 사용
+        2. 목표의 내용을 수정하고 싶을 때 description 수정
+      parameters:
+      - description: room ID
+        in: path
+        name: room_id
+        required: true
+        type: integer
+      - description: task ID
+        in: path
+        name: task_id
+        required: true
+        type: integer
+      - description: 태스크 수정 요청 body
+        in: body
+        name: task
+        required: true
+        schema:
+          $ref: '#/definitions/controller.patchRequestTask'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.patchResponseTask'
+        "400":
+          description: ""
+      summary: update a task
+      tags:
+      - tasks
 swagger: "2.0"

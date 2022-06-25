@@ -57,8 +57,13 @@ func bootstrap() *gin.Engine {
 	infrastructure.Migrate(db)
 
 	// set DI
+	taskRepository := persistence.NewTaskRepository(db)
 	roomRepository := persistence.NewRoomRepository(db)
+
+	taskService := service.NewTaskService(taskRepository)
 	roomService := service.NewRoomService(roomRepository)
+
+	taskController := controller.NewTaskController(taskService)
 	roomController := controller.NewRoomController(roomService)
 
 	// init server
@@ -72,6 +77,7 @@ func bootstrap() *gin.Engine {
 	// init routes
 	v1 := server.Group(versionPrefix)
 	route.RoomRoutes(v1, roomController)
+	route.TaskRoutes(v1, taskController)
 	return server
 }
 

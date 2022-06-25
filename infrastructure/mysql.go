@@ -41,8 +41,6 @@ func ConnectDatabase(phase string) *gorm.DB {
 		dsn = devDsn(configs.DatabaseConfig())
 	}
 
-	fmt.Print(dsn)
-
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
@@ -64,4 +62,5 @@ func ConnectDatabase(phase string) *gorm.DB {
 // Migrate do db migrations
 func Migrate(db *gorm.DB) {
 	db.AutoMigrate(&persistence.RoomGorm{})
+	db.AutoMigrate(&persistence.TaskGorm{})
 }
