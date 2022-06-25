@@ -94,7 +94,7 @@ func bootstrap() *gin.Engine {
 	route.TaskRoutes(v1, taskController)
 	cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000"},
-		AllowMethods:     []string{"PUT", "PATCH"},
+		AllowMethods:     []string{"PUT", "PATCH", "OPTIONS"},
 		AllowHeaders:     []string{"Origin"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
