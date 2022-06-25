@@ -1,8 +1,20 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "This is a pitch api server.",
+        "title": "Pitch API Server (dobby's)",
+        "contact": {
+            "name": "API Support",
+            "url": "https://minkj1992.github.io",
+            "email": "minkj1992@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
     },
+    "basePath": "/v1",
     "paths": {
         "/rooms": {
             "get": {
@@ -375,6 +387,9 @@
             "type": "object",
             "properties": {
                 "createdAt": {
+                    "type": "string"
+                },
+                "goal": {
                     "type": "string"
                 },
                 "id": {

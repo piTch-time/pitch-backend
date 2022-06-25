@@ -39,6 +39,7 @@ type responseRoom struct {
 	Name         string     `json:"name"`
 	CreatedAt    *time.Time `json:"createdAt"`
 	TaskProgress int        `json:"taskProgress"`
+	Goal         string     `json:"goal"`
 	StartEnd     string     `json:"startEnd"`
 }
 
@@ -50,7 +51,7 @@ const (
 	allDone = 100
 )
 
-// TODO: move to domain but fxxking hackaton
+// TODO: move to domain but notime hackaton
 func getTasksProgress(tasks entity.Tasks) int {
 	total := len(tasks)
 	count := 0
@@ -97,6 +98,7 @@ func (rc *roomController) GetAll() gin.HandlerFunc {
 				ID:           room.ID,
 				Name:         room.Name,
 				CreatedAt:    room.CreatedAt,
+				Goal:         room.Goal,
 				TaskProgress: getTasksProgress(*tasks),
 				StartEnd:     room.GetStartEnd(),
 			})

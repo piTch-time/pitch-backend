@@ -1,6 +1,8 @@
 package configs
 
 import (
+	"fmt"
+
 	"github.com/piTch-time/pitch-backend/infrastructure/logger"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -13,6 +15,7 @@ const (
 
 // Config ...
 type Config struct {
+	Host     string   `mapstructure:"host"`
 	DBConfig DBConfig `mapstructure:"db-config"`
 }
 
@@ -41,6 +44,8 @@ func Load(path string) (Config, error) {
 	}
 
 	err = viper.Unmarshal(&config)
+
+	fmt.Println(config)
 	return config, err
 }
 

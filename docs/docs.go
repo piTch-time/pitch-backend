@@ -10,7 +10,15 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "contact": {
+            "name": "API Support",
+            "url": "https://minkj1992.github.io",
+            "email": "minkj1992@gmail.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -389,6 +397,9 @@ const docTemplate = `{
                 "createdAt": {
                     "type": "string"
                 },
+                "goal": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
@@ -435,12 +446,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
+	Version:          "1.0",
 	Host:             "",
-	BasePath:         "",
+	BasePath:         "/v1",
 	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Title:            "Pitch API Server (dobby's)",
+	Description:      "This is a pitch api server.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }
