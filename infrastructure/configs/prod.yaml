@@ -3,7 +3,8 @@
 host: "pitch-backend-qytbbgth3q-du.a.run.app"
 db-config:
   # project:region:instance
-  host: "tonal-feat-354404:asia-northeast3:pitch-instance"
+  # host: "tonal-feat-354404:asia-northeast3:pitch-instance"
+  host: "tonal-feat-354404:asia-northeast3:db"
   user: "root"
-  name: "pitch_db"
+  name: "pitch" # name: "pitch_db"
   password: "pitch1!"
