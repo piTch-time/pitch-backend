@@ -92,3 +92,12 @@ func (rr *RoomRepository) GetAll() (*entity.Rooms, error) {
 	}
 	return &rooms, nil
 }
+
+// Delete func delete a room
+func (rr *RoomRepository) Delete(room *entity.Room) error {
+	dto := toDTO(room)
+	if err := rr.db.Delete(&dto).Error; err != nil {
+		return err
+	}
+	return nil
+}

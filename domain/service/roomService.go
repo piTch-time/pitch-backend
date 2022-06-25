@@ -11,6 +11,7 @@ type RoomService interface {
 	Create(goal, name, password, musicURL string, start, end string) (uint, error)
 	Get(id uint) (*entity.Room, error)
 	GetAll() (*entity.Rooms, error)
+	Delete(room *entity.Room) error
 }
 
 type roomService struct {
@@ -52,4 +53,12 @@ func (rs *roomService) GetAll() (*entity.Rooms, error) {
 		return nil, err
 	}
 	return rooms, nil
+}
+
+func (rs *roomService) Delete(room *entity.Room) error {
+	err := rs.roomRepository.Delete(room)
+	if err != nil {
+		return err
+	}
+	return nil
 }

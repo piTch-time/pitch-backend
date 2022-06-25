@@ -169,7 +169,28 @@ paths:
       summary: create a room
       tags:
       - rooms
-  /rooms/{id}:
+  /rooms/{room_id}:
+    delete:
+      consumes:
+      - application/json
+      description: 방 삭제
+      parameters:
+      - description: 방 ID
+        format: uint
+        in: path
+        name: room_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: ""
+        "400":
+          description: ""
+      summary: Delete room
+      tags:
+      - rooms
     get:
       consumes:
       - application/json
@@ -178,7 +199,7 @@ paths:
       - description: 방 ID
         format: uint
         in: path
-        name: id
+        name: room_id
         required: true
         type: integer
       produces:

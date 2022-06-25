@@ -18,6 +18,7 @@ type RoomController interface {
 	Get() gin.HandlerFunc
 	GetAll() gin.HandlerFunc
 	Post() gin.HandlerFunc
+	Delete() gin.HandlerFunc
 	// VerifyPassword() gin.HandlerFunc
 }
 
@@ -128,10 +129,10 @@ type detailResponseRoom struct {
 // @Tags         rooms
 // @Accept       json
 // @Produce      json
-// @Param        id    path     int  true  "방 ID"  Format(uint)
+// @Param        room_id    path     int  true  "방 ID"  Format(uint)
 // @Success      200  {object}   detailResponseRoom
 // @Failure      400
-// @Router       /rooms/{id} [get]
+// @Router       /rooms/{room_id} [get]
 func (rc *roomController) Get() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		roomID, err := application.ParseUint(c.Param("room_id"))
@@ -206,5 +207,37 @@ func (rc *roomController) Post() gin.HandlerFunc {
 
 		res := postResponseRoom{RoomID: roomID}
 		c.JSON(http.StatusOK, res)
+	}
+}
+
+// @Summary      Delete room
+// @Description  방 삭제
+// @Tags         rooms
+// @Accept       json
+// @Produce      json
+// @Param        room_id    path     int  true  "방 ID"  Format(uint)
+// @Success      204
+// @Failure      400
+// @Router       /rooms/{room_id} [delete]
+func (rc *roomController) Delete() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		roomID, err := application.ParseUint(c.Param("room_id"))
+		if err != nil {
+			logger.Error(err.Error())
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		room, err := rc.roomService.Get(roomID)
+		if err != nil {
+			logger.Error(err.Error())
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+		if err := rc.roomService.Delete(room); err != nil {
+			logger.Error(err.Error())
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+		c.Status(http.StatusNoContent)
 	}
 }

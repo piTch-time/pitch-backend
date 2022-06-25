@@ -7,6 +7,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gin-contrib/cors"
 	ginzap "github.com/gin-contrib/zap"
 	"github.com/gin-gonic/gin"
 	"github.com/piTch-time/pitch-backend/application/controller"
@@ -91,6 +92,14 @@ func bootstrap() *gin.Engine {
 	v1 := server.Group(versionPrefix)
 	route.RoomRoutes(v1, roomController)
 	route.TaskRoutes(v1, taskController)
+	cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"PUT", "PATCH"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	})
 	return server
 }
 

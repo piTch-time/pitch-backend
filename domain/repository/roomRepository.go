@@ -7,4 +7,5 @@ type RoomRepository interface {
 	Create(room *entity.Room) (uint, error)
 	GetByID(id uint) (*entity.Room, error)
 	GetAll() (*entity.Rooms, error)
+	Delete(room *entity.Room) error
 }

@@ -85,7 +85,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/rooms/{id}": {
+        "/rooms/{room_id}": {
             "get": {
                 "description": "룸 상세",
                 "consumes": [
@@ -103,7 +103,7 @@ const docTemplate = `{
                         "type": "integer",
                         "format": "uint",
                         "description": "방 ID",
-                        "name": "id",
+                        "name": "room_id",
                         "in": "path",
                         "required": true
                     }
@@ -114,6 +114,37 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/controller.detailResponseRoom"
                         }
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "description": "방 삭제",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "rooms"
+                ],
+                "summary": "Delete room",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "format": "uint",
+                        "description": "방 ID",
+                        "name": "room_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
                     },
                     "400": {
                         "description": ""
