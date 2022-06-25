@@ -23,6 +23,19 @@ import (
 	"go.uber.org/zap"
 )
 
+// refs: https://github.com/swaggo/swag/blob/master/example/celler/main.go
+// @title           Pitch API Server (dobby's)
+// @version         1.0
+// @description     This is a pitch api server.
+
+// @contact.name   API Support
+// @contact.url    https://minkj1992.github.io
+// @contact.email  minkj1992@gmail.com
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+// @BasePath  /v1
+
 const (
 	//
 	versionPrefix = "/v1"
@@ -82,6 +95,7 @@ func bootstrap() *gin.Engine {
 }
 
 func swagger(server *gin.Engine) {
+	docs.SwaggerInfo.Host = conf.Host
 	docs.SwaggerInfo.BasePath = versionPrefix
 	server.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 }

@@ -1,0 +1,24 @@
+version: "3"
+services:
+  # refs: https://github.com/GoogleCloudPlatform/cloudsql-proxy/blob/main/examples/k8s-health-check/proxy_with_http_health_check.yaml#L38
+  cloudsql-proxy:
+    container_name: cloudsql-proxy
+    # 1.19는 health-check를 제공하지 않는다.
+    image: gcr.io/cloudsql-docker/gce-proxy:1.28.0
+    command: /cloud_sql_proxy --dir=/cloudsql -instances=tonal-feat-354404:asia-northeast3:pitch-instance=tcp:0.0.0.0:5432 -credential_file=/secrets/cloudsql/credentials.json -use_http_health_check -health_check_port=8090
+    ports:
+      - 5432:5432
+      - 8090:8090
+    volumes:
+      - ./credentials.json:/secrets/cloudsql/credentials.json
+    restart: always
+
+  pitch:
+    container_name: pitch
+    build: .
+    ports:
+      - 8080:8080
+    depends_on:
+      - cloudsql-proxy
+    command: bash -c 'while [[ "$$(curl --connect-timeout 2 -s -o /dev/null -w ''%{http_code}'' cloudsql-proxy:8090/readiness)" != "200" ]]; do echo ..; sleep 5; done; echo pitch api is up;/home/pitch -phase=prod'
+    restart: always

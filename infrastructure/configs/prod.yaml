@@ -1,6 +1,9 @@
-# connection: project:region:instance
+# https://cloud.google.com/sql/docs/mysql/connect-overview#expandable-2
+# TODO : project url change
+host: "pitch-backend-qytbbgth3q-du.a.run.app"
 db-config:
-  host: "..."
+  # project:region:instance
+  host: "tonal-feat-354404:asia-northeast3:pitch-instance"
   user: "root"
-  name: "pitch"
-  password: "..."
+  name: "pitch_db"
+  password: "pitch1!"

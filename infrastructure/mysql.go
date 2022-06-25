@@ -40,6 +40,7 @@ func ConnectDatabase(phase string) *gorm.DB {
 	default:
 		dsn = devDsn(configs.DatabaseConfig())
 	}
+	fmt.Println(dsn)
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
