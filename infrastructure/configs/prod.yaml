@@ -1,0 +1,6 @@
+# connection: project:region:instance
+db-config:
+  host: "..."
+  user: "root"
+  name: "pitch"
+  password: "..."
